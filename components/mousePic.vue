@@ -5,15 +5,15 @@
       @mousemove="mmove"
       @mouseleave="mmove"
       class="left"
-      :style="{ width: width, height: height }"
+      :style="{ width: gwidth, height: gheight }"
     >
-      <img :src="props.imgs[active].beforeImg" class="front" />
+      <img :src="imgs[active].beforeImg" class="front" />
       <div
         class="back ani"
         :key="active"
         :style="{
-          backgroundImage: `url(${props.imgs[active].afterImg})`,
-          backgroundSize: width + ' ' + height,
+          backgroundImage: `url(${imgs[active].afterImg})`,
+          backgroundSize: gwidth + ' ' + gheight,
           width: imgw,
         }"
       >
@@ -26,7 +26,7 @@
     <div class="right" :style="{ height: height }">
       <ul class="check-box">
         <li
-          v-for="(item, index) in props.imgs"
+          v-for="(item, index) in imgs"
           :key="index"
           :class="{ active: active === index }"
           @click="clickRightItem(index)"
@@ -66,8 +66,8 @@ export default {
   },
   methods: {
     clickRightItem(index) {
-      active.value = index;
-      imgw.value = "50%";
+      this.active = index;
+      this.imgw = "50%";
     },
     mmove(e) {
       let mwidth = e.offsetX;
@@ -105,61 +105,6 @@ export default {
   }
 }
 
-// const props = defineProps({
-//   imgs: Array,
-//   width: {
-//     type: [Number, String],
-//     default: 600,
-//   },
-//   height: {
-//     type: [Number, String],
-//     default: 350,
-//   },
-// });
-
-// const imgw = ref("50%");
-// const active = ref(0);
-// const { width, height } = getSize();
-
-// function clickRightItem(index) {
-//   active.value = index;
-//   imgw.value = "50%";
-// }
-
-// function mmove(e) {
-//   let mwidth = e.offsetX;
-//   const nwidth = width.replace('px','');
-//   if(e.offsetX >= nwidth) {
-//     mwidth = nwidth;
-//   };
-
-//   if(e.offsetX < 0) {
-//     mwidth = 0;
-//   };
-
-//   imgw.value = mwidth + "px";
-// }
-
-// function getSize() {
-//   let { width, height } = props;
-//   if (typeof width === "number") {
-//     width = width + "px";
-//   } else if (typeof width === "string" && !width.endsWith("px")) {
-//     width = 600 + "px";
-//   }
-
-//   if (typeof height === "number") {
-//     height = height + "px";
-//   } else if (typeof height === "string" && !height.endsWith("px")) {
-//     height = 350 + "px";
-//   }
-
-//   const obj = {
-//     width: width,
-//     height: height,
-//   };
-//   return obj;
-// }
 </script>
 
 <style lang="scss" scoped>

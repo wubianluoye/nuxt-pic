@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <div class="content-left">
-      <el-image :src="props.info.url" />
+      <el-image :src="info.url" />
     </div>
     <div class="content-right">
       <div class="right-wrap">
@@ -23,10 +23,12 @@
 export default{
   name: 'ScenceItem',
   props: {
-    type: Object,
-    default: ()=>{
-      return {
-        url: '',
+    info: {
+      type: Object,
+      default: ()=>{
+        return {
+          url: '',
+        }
       }
     }
   }

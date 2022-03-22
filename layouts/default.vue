@@ -4,11 +4,11 @@
         <Header class="max-width" />
       </el-header>
       <el-main class="main">
-        <Nuxt/>
+        <nuxt-child />
       </el-main>
-      <el-footer class="footer">
+      <div class="footer">
         <Footer class="max-width" />
-      </el-footer>
+      </div>
     </el-container>
 </template>
 <script>

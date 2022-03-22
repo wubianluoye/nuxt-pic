@@ -11,11 +11,11 @@
         </div>
       </el-header>
       <el-main class="main">
-        <Nuxt/>
+        <nuxt-child/>
       </el-main>
-      <el-footer class="footer">
+      <div class="footer">
         <Fabout class="max-width" />
-      </el-footer>
+      </div>
     </el-container>
 </template>
 <script>
@@ -42,7 +42,7 @@
 <style lang="scss" scoped>
 .content {
   width: 100%;
-  height: 100vh;
+  height: 100%;
   position: relative;
 }
 

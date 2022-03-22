@@ -2,15 +2,15 @@
   <div class="header">
     <div class="title-box">
       <nuxt-link to="/" class="logo" >
-        <el-image :src="props.logo" class="img" />
+        <el-image :src="logo" class="img" />
       </nuxt-link>
       <nuxt-link to="/">
         <h1 class="title">视觉开放平台</h1>
       </nuxt-link>
     </div>
     <div v-if="name" class="login-box">
-      <el-avatar :size="50" :src="props.avatar" />
-      <span>{{props.name}}</span>
+      <el-avatar :size="50" :src="avatar" />
+      <span>{{name}}</span>
     </div>
     <div v-else class="login-box">
       <nuxt-link to="/login">

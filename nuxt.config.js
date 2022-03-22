@@ -1,3 +1,5 @@
+require('dotenv').config()
+console.log(process.env)
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
@@ -21,6 +23,7 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
+    'normalize.css/normalize.css',
     'element-ui/lib/theme-chalk/index.css',
     {src:'@/assets/scss/index.scss', lang:"scss"}
   ],
@@ -29,8 +32,9 @@ export default {
   plugins: [
     '@/plugins/element-ui',
     '@/plugins/router',
-    '@plugins/request'
+    '@/plugins/request'
   ],
+
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -42,6 +46,9 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     '@nuxtjs/axios',
+    ['@nuxtjs/dotenv',{
+      filename: process.env.NODE_ENV == 'production'? '.env.production' : '.env.development'
+    }]
   ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

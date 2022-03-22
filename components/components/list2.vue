@@ -2,7 +2,7 @@
   <div class="list">
     <span class="title">{{title}}</span>
     <div class="wrap">
-      <span v-for="(item, index) in props.list" :key="index" class="item">
+      <span v-for="(item, index) in list" :key="index" class="item">
         <NuxtLink v-if="item.url" :to="item.url" class="link">{{item.text}}</NuxtLink>
         <span v-else class="link">{{item.text}}</span>
       </span>

@@ -1,7 +1,7 @@
 <template>
   <ul class="list">
     <span class="title">{{title}}</span>
-    <li v-for="(item, index) in props.list" :key="index" class="item">
+    <li v-for="(item, index) in list" :key="index" class="item">
       <NuxtLink v-if="item.url" :to="item.url" class="link">{{item.text}}</NuxtLink>
       <span v-else class="link">{{item.text}}</span>
     </li>
@@ -11,6 +11,7 @@
   export default{
     name: 'MyList',
     props: {
+      title: '',
       list: {
         type: Array,
         default: ()=>[]
