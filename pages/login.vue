@@ -34,7 +34,12 @@
               placeholder="请输入验证码"
               class="code-input"
             ></el-input>
-            <el-image class="code-img-box" :src="bs_64" fit="fill" :lazy="true" @click.native="changeCode"></el-image>
+            <el-image class="code-img-box" :src="bs_64" fit="fill" :lazy="true" @click.native="changeCode">
+              <div slot="error" class="error-img">
+                <i class="el-icon-loading"></i>
+                加载中
+              </div>
+            </el-image>
           </div>
         </el-form-item>
         <el-form-item>
@@ -73,8 +78,8 @@ export default {
     return {
       active: 'first',
       form: {
-        email: null,
-        password: null,
+        email: '18872211785@163.com',
+        password: '123456',
         code: null
       },
       rules: {
@@ -186,6 +191,15 @@ export default {
       width: 100%;
       height: 100%;
     }
+    ::v-deep .error-img{
+      border: 1px solid #bbb;
+      padding: 0 4px;
+      line-height: 36px;
+      color: #bbb;
+      font-size: 12px;
+      border-radius: 4px;
+    }
   }
 }
+
 </style>

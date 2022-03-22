@@ -63,11 +63,9 @@
       @closed="closed">
       <el-form :model="form2" ref="form2" :rules="rules" label-width="100px" :inline="false" size="normal" @submit.native.prevent>
         <el-form-item label="验证码">
-          <el-image :src="form2.bs_64" fit="fill" style="border: 1px solid #999; margin:0 4px;" :lazy="true" @click.native="getCode">
-            <div slot="error">
-              加载失败
-            </div>
-            <div slot="placeholder" class="image-slot">
+          <el-image :src="form2.bs_64" fit="fill" :lazy="true" @click.native="getCode">
+            <div slot="error" style="border: 1px solid #bbb; padding:0 4px;line-height:36px;color: #bbb;">
+              <i class="el-icon-loading"></i>
               加载中
             </div>
           </el-image>
