@@ -81,7 +81,7 @@ export default{
       },
       activeName: 'first',
       activeName2: 'first',
-      list: []
+      list: [{}]
     }
   }
 }

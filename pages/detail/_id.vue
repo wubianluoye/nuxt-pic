@@ -2,7 +2,7 @@
   <div class="detail-content">
     <div class="bg-1">
       <div class="max-width breadcrumb">
-        <el-breadcrumb :separator-icon="ArrowRight">
+        <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
           <el-breadcrumb-item>detail</el-breadcrumb-item>
         </el-breadcrumb>
@@ -19,9 +19,7 @@
           <el-button type="warning" plain>技术文档</el-button>
           <el-button type="text">
             产品价格
-            <el-icon>
-              <ArrowRight/>
-            </el-icon>
+            <i class="el-icon-arrow-right"></i>
           </el-button>
         </div>
         <div class="head-nav">
@@ -55,13 +53,17 @@
             <div class="upload-area">
               <div class="left-input">
                 <div class="l-box">
-                  <el-input v-model="imgurl" :suffix-icon="Search" placeholder="输入图片url地址" clearable></el-input>
+                  <el-input v-model="imgurl" suffix-icon="el-icon-search" placeholder="输入图片url地址" clearable></el-input>
                   <span class="t">或</span>
                     <el-upload
                       class="upload-com"
-                      action="https://jsonplaceholder.typicode.com/posts/"
+                      :action="uploadUrl"
+                      :multiple="false"
+                      :show-file-list="false"
+                      accept="image/png,image/jpg"
+                      :on-success="changeFile"
                     >
-                    <el-button type="warning">上传图片</el-button>
+                    <el-button type="warning" @click="uploadHandle">上传图片</el-button>
                   </el-upload>
                 </div>
                 <div class="tip">图片格式：JPEG、JPG、PNG（不支持8位、16位、64位PNG）、BMP、WEBP。 图像大小：小于3MB。 图像分辨率：小于1280×1280像素。</div>
@@ -124,21 +126,43 @@
   </div>
 </template>
 <script>
-// import { ArrowRight, Search } from '@element-plus/icons-vue'
-
 export default {
   name: 'Detail',
   data() {
     return {
+      uploadUrl: '',
       data: {
         title: '商品分割'
       },
       imgurl: '',
-      table: [1,2,3]
+      table: [1,2,3],
+      file: {}
     }
   },
   methods: {
-    download() {}
+    download() {},
+    uploadHandle() {
+      // 是否登录
+      
+    },
+    getPolicy() {
+
+      this.$axios.get('/policy',{
+        params: {
+          action: '',
+          old_name: this.file.name
+        }
+      }).then(res=> {
+        if(res.code === 200) {
+          const info = res.data || {}
+        }else{
+          this.$message.error(res.message[0])
+        }
+      })
+    },
+    changeFile(file) {
+      this.file = file
+    }
   }
 }
 
