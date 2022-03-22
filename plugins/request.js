@@ -40,7 +40,10 @@ export default(({ app, $axios, redirect })=> {
   })
 
   $axios.interceptors.response.use(response=> {
-    return response
+    if(response.status !==200) {
+      return Promise.reject('未知错误'+response.status)
+    }
+    return response.data
   }, error => {
     return Promise.reject(error)
   })

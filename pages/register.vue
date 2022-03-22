@@ -6,56 +6,81 @@
         ref="formRef"
         class="form"
         :rules="rules"
-        label-width="80px"
+        label-width="100px"
         :inline="false"
         size="normal"
       >
-        <el-form-item prop="name">
+        <el-form-item label="注册邮箱" prop="email">
           <el-input
-            v-model.trim="form.name"
+            v-model.trim="form.email"
             size="large"
-            placeholder="输入用户名"
+            placeholder="请输入邮箱"
           ></el-input>
+          <el-button type="primary" plain size="mini" :loading="time>0" @click="sendEmail">
+            <span>发送验证码</span>
+            <span v-if="time>0">({{ time }})</span>
+          </el-button>
         </el-form-item>
-        <el-form-item prop="password">
+        <el-form-item label="注册密码" prop="password">
           <el-input
             v-model.trim="form.password"
             size="large"
             type="password"
-            placeholder="请输入用户密码"
+            placeholder="请输入密码"
           ></el-input>
         </el-form-item>
-        <el-form-item prop="password2">
+        <el-form-item label="邮箱验证码" prop="email_code">
           <el-input
-            v-model.trim="form.password2"
+            v-model.trim="form.email_code"
             size="large"
             type="password"
-            placeholder="请再次输入用户密码"
+            placeholder="请输入邮箱验证码"
           ></el-input>
         </el-form-item>
-        <el-form-item prop="phoneNumber">
-          <el-input
-            v-model.trim="form.phoneNumber"
-            size="large"
-            type="text"
-            placeholder="请输入手机号"
-          ></el-input>
-        </el-form-item>
-        <el-form-item>
+        <el-form-item class="btn-label">
           <el-button
             type="primary"
-            @click="onSubmit"
+            @click="regHandle"
             size="large"
             style="width: 100%"
-            >注册</el-button
-          >
+            >注 册</el-button>
         </el-form-item>
         <div class="froget">
           <div class="item">已有账号，</div>
-          <nuxt-link to="/login" class="item"> 去登录 </nuxt-link>
+          <nuxt-link to="/login" class="item item-go"> 去登录 </nuxt-link>
         </div>
       </el-form>
     </div>
+
+    <el-dialog
+      title="验证"
+      :closeOnClickModal="false"
+      :closeOnPressEscape="false"
+      :showCancelButton="false"
+      :visible.sync="show"
+      width="400px"
+      @open="getCode()"
+      @closed="closed">
+      <el-form :model="form2" ref="form2" :rules="rules" label-width="100px" :inline="false" size="normal" @submit.native.prevent>
+        <el-form-item label="验证码">
+          <el-image :src="form2.bs_64" fit="fill" style="border: 1px solid #999; margin:0 4px;" :lazy="true" @click.native="getCode">
+            <div slot="error">
+              加载失败
+            </div>
+            <div slot="placeholder" class="image-slot">
+              加载中
+            </div>
+          </el-image>
+        </el-form-item>
+        <el-form-item label="确认验证码" prop="code">
+          <el-input v-model="form2.code" placeholder="请输入验证码"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">发送验证码</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+    
   </div>
 </template>
 <script>
@@ -63,39 +88,61 @@ export default {
   layout: 'login',
   name: 'register',
   data() {
-    //phoneNumber prop与form中的键名一致才能使其校验生效
-    const phoneValid = (rule, value, callback) => {
-      if(!value) {
-        callback(new Error('请输入手机号'))
-      }else{
-        const reg = /^1[3-9]{1}[0-9]{8}/
-        if( value.length!==11 || !reg.test(value)) {
-          callback(new Error('请输入正确的手机号码'))
-        }
-      }
-      callback()
-    }
     return {
+      TIME_OUT: 60,
+      timer: null,
+      time: null,
+      show: false,
       form: {
-        name: 'null@qq.com',
-        password: '11111111',
-        password2: '11111111',
-        phoneNumber: '13111111111'
+        email: null,
+        password: null,
+        email_code: null
       },
       rules:{
-        name: { required: true, type: 'email', message: "请输入账号名", trigger: "blur" },
+        email: { required: true, type: 'email', message: "请输入正确的邮箱", trigger: "blur" },
         password: { required: true, message: "请输入密码", min: 6, max: 20, trigger: "blur" },
-        password2: { required: true, message: "请输入密码", min: 6, max: 20, trigger: "blur" },
-        phoneNumber: { required: true, validator: phoneValid, trigger: "blur" },
+        email_code: { required: true, message: "请输入邮箱验证码", min: 6, max: 20, trigger: "blur" },
+        code: { required: true, message: "请输入验证码", trigger: "blur" }
+      },
+      form2: {
+        bs_64: null,
+        key: null,
+        code: null
       }
     }
   },
   methods: {
     onSubmit() {
-      this.$refs.fRef.validate((valid) => {
+      this.$refs.form2.validate((valid) => {
         if (valid) {
-          console.log("register");
+          const obj = {...this.form2, email:this.form.email}
+          delete obj.bs_64
 
+          this.$axios.get('/email-code', {
+            params: obj
+          }).then(res=> {
+            if(res.code === 200) {
+              this.$message.success('发送成功')
+              this.show = false
+            }else if(res.code === 400){
+              this.$message({
+                type: 'error',
+                message: res.message[0]
+              })
+              this.getCode()
+            }
+            else{
+              this.$message.error(res.message[0])
+            }
+          })
+        } else {
+          return false;
+        }
+      })
+    },
+    regHandle() {
+      this.$axios.post('/register', this.form).then(res=> {
+        if(res.code === 200) {
           this.$message({
             type: 'success',
             message: '注册成功！即将跳转到登录页面',
@@ -103,8 +150,41 @@ export default {
               this.$router.push("/login");
             }
           })
-        } else {
-          return false;
+        }else{
+          this.$message.error(res.message[0])
+          this.show = false
+
+        }
+      })
+    },
+    sendEmail() {
+      const reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+      if(!reg.test(this.form.email)) {
+        return
+      }
+
+      this.time = this.TIME_OUT
+      this.show = true
+      this.timer = setInterval(()=> {
+      if(this.time<=0) clearInterval(this.timer)
+        this.time--
+      },1000)
+    },
+    closed() {
+      this.form2 = {
+        key: null,
+        bs_64: null,
+        code: null
+      }
+
+      this.show = false
+    },
+    getCode() {
+      this.$axios.get('/captcha').then(res=> {
+        if(res.code === 200) {
+          const { bs_64, key } = res.data || {}
+          this.form2.bs_64 = bs_64
+          this.form2.key = key
         }
       })
     }
@@ -116,7 +196,7 @@ export default {
 .login-content {
   padding: 10px 20px 30px;
   width: 100%;
-  height: 460px;
+  height: 100%;
   box-sizing: border-box;
   display: flex;
   align-content: center;
@@ -146,5 +226,15 @@ export default {
     font-size: 12px;
     color: #999;
   }
+  .item-go{
+    color: #F56C6C;
+  }
+}
+::v-deep button[aria-label="Close"].el-dialog__headerbtn{
+  display: none;
+}
+
+.btn-label::v-deep .el-form-item__content{
+  margin-left: 0!important;
 }
 </style>
