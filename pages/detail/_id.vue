@@ -62,9 +62,12 @@
                       :show-file-list="false"
                       accept="image/png,image/jpg"
                       :on-success="changeFile"
+                      ref="upload"
+                      hidden
                     >
-                    <el-button type="warning" @click="uploadHandle">上传图片</el-button>
+                    <!-- <el-button type="warning" @click="uploadHandle">上传图片</el-button> -->
                   </el-upload>
+                  <el-button type="warning" @click="beforePpload">上传图片</el-button>
                 </div>
                 <div class="tip">图片格式：JPEG、JPG、PNG（不支持8位、16位、64位PNG）、BMP、WEBP。 图像大小：小于3MB。 图像分辨率：小于1280×1280像素。</div>
               </div>
@@ -141,13 +144,23 @@ export default {
   },
   methods: {
     download() {},
+    beforePpload() {
+
+      // 1.是否登录
+      // this.$router.push('/')
+      
+      // 在组件外调用el-upload上传的文件选择
+      this.$refs.upload && this.$refs.upload.$refs['upload-inner'] && this.$refs.upload.$refs['upload-inner'].handleClick()
+    },
     uploadHandle() {
-      // 是否登录
       
     },
     getPolicy() {
 
-      this.$axios.get('/policy',{
+      this.$axios.get('/policy', {
+        headers: {
+          Cookie: ''
+        },
         params: {
           action: '',
           old_name: this.file.name
